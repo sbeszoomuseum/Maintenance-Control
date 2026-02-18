@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Super Admin - Maintenance Control Panel</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div id="app"></div>
+
+  <!-- Login Page -->
+  <div id="login-page" class="page active">
+    <div class="login-container">
+      <div class="login-box">
+        <div class="login-header">
+          <div class="logo">
+            <i class="fas fa-shield-alt"></i>
+          </div>
+          <h1>Super Admin Panel</h1>
+          <p>Maintenance Control System</p>
+        </div>
+
+        <form id="login-form">
+          <div class="form-group">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" name="email" required placeholder="admin@biomuseum.com" />
+            <span class="error-message" id="email-error"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required placeholder="••••••••" />
+            <span class="error-message" id="password-error"></span>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block" id="login-btn">
+            <i class="fas fa-sign-in-alt"></i> Sign In
+          </button>
+
+          <span class="error-message" id="login-error"></span>
+        </form>
+
+        <div class="login-footer">
+          <p>For security purposes, only super admins can access this panel.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dashboard Page -->
+  <div id="dashboard-page" class="page">
+    <nav class="navbar">
+      <div class="navbar-left">
+        <div class="logo-small">
+          <i class="fas fa-shield-alt"></i>
+          <span>Admin Panel</span>
+        </div>
+      </div>
+      <div class="navbar-right">
+        <span class="user-info">
+          <i class="fas fa-user-circle"></i>
+          <span id="user-name"></span>
+        </span>
+        <button id="logout-btn" class="btn-logout">Logout</button>
+      </div>
+    </nav>
+
+    <div class="main-content">
+      <aside class="sidebar">
+        <ul class="menu">
+          <li>
+            <a href="#dashboard" class="menu-item active" data-page="dashboard">
+              <i class="fas fa-chart-line"></i>
+              <span>Dashboard</span>
+            </a>
+          </li>
+          <li>
+            <a href="#clients" class="menu-item" data-page="clients">
+              <i class="fas fa-university"></i>
+              <span>Clients</span>
+            </a>
+          </li>
+          <li>
+            <a href="#settings" class="menu-item" data-page="settings">
+              <i class="fas fa-cog"></i>
+              <span>Settings</span>
+            </a>
+          </li>
+        </ul>
+      </aside>
+
+      <main class="content-area">
+        <!-- Dashboard View -->
+        <div id="dashboard-view" class="view active">
+          <div class="page-header">
+            <h1>Dashboard</h1>
+            <p>Overview of your college clients and subscription status</p>
+          </div>
+
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-icon">
+                <i class="fas fa-university"></i>
+              </div>
+              <div class="stat-content">
+                <div class="stat-value" id="total-clients">0</div>
+                <div class="stat-label">Total Clients</div>
+              </div>
+            </div>
+
+            <div class="stat-card success">
+              <div class="stat-icon">
+                <i class="fas fa-check-circle"></i>
+              </div>
+              <div class="stat-content">
+                <div class="stat-value" id="active-clients">0</div>
+                <div class="stat-label">Active Clients</div>
+              </div>
+            </div>
+
+            <div class="stat-card warning">
+              <div class="stat-icon">
+                <i class="fas fa-clock"></i>
+              </div>
+              <div class="stat-content">
+                <div class="stat-value" id="due-clients">0</div>
+                <div class="stat-label">Due for Payment</div>
+              </div>
+            </div>
+
+            <div class="stat-card danger">
+              <div class="stat-icon">
+                <i class="fas fa-pause-circle"></i>
+              </div>
+              <div class="stat-content">
+                <div class="stat-value" id="suspended-clients">0</div>
+                <div class="stat-label">Suspended</div>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-icon">
+                <i class="fas fa-dollar-sign"></i>
+              </div>
+              <div class="stat-content">
+                <div class="stat-value" id="total-revenue">$0</div>
+                <div class="stat-label">Total Revenue</div>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-icon">
+                <i class="fas fa-heartbeat"></i>
+              </div>
+              <div class="stat-content">
+                <div class="stat-value" id="health-percentage">0%</div>
+                <div class="stat-label">System Health</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="dashboard-grid">
+            <div class="card">
+              <div class="card-header">
+                <h2>Status Distribution</h2>
+              </div>
+              <div class="card-body">
+                <canvas id="status-chart"></canvas>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <h2>Recent Clients</h2>
+              </div>
+              <div class="card-body">
+                <div id="recent-clients-list" class="clients-mini-list"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Clients View -->
+        <div id="clients-view" class="view">
+          <div class="page-header">
+            <h1>College Clients</h1>
+            <button id="add-client-btn" class="btn btn-primary">
+              <i class="fas fa-plus"></i> Add New Client
+            </button>
+          </div>
+
+          <div class="filters-bar">
+            <input type="text" id="search-input" class="form-control" placeholder="Search by name or email..." />
+            <select id="status-filter" class="form-control">
+              <option value="">All Statuses</option>
+              <option value="active">Active</option>
+              <option value="due">Due</option>
+              <option value="suspended">Suspended</option>
+            </select>
+            <button id="clear-filters" class="btn btn-secondary">Clear Filters</button>
+          </div>
+
+          <div class="card">
+            <div class="card-body">
+              <div class="table-responsive">
+                <table id="clients-table" class="table">
+                  <thead>
+                    <tr>
+                      <th>Client ID</th>
+                      <th>Status</th>
+                      <th>Payment Status</th>
+                      <th>Next Billing</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="clients-tbody"></tbody>
+                </table>
+              </div>
+              <div class="pagination" id="pagination"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Client Detail Modal -->
+        <div id="client-detail-modal" class="modal">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h2>Client Details & Maintenance</h2>
+              <button class="modal-close" id="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+              <div class="tabs">
+                <div class="tab-buttons">
+                  <button class="tab-btn active" data-tab="info">Client Info</button>
+                  <button class="tab-btn" data-tab="maintenance">Maintenance</button>
+                  <button class="tab-btn" data-tab="billing">Billing</button>
+                </div>
+
+                <!-- Info Tab -->
+                <div class="tab-content active" id="info-tab">
+                  <div class="form-group">
+                    <label>Client ID</label>
+                    <input type="text" id="detail-clientId" readonly class="form-control" />
+                  </div>
+                  <div class="form-group">
+                    <label>Popup Message</label>
+                    <textarea id="detail-message" class="form-control" rows="4" placeholder="Message shown when status is due or suspended"></textarea>
+                  </div>
+                </div>
+
+                <!-- Maintenance Tab -->
+                <div class="tab-content" id="maintenance-tab">
+                  <div class="form-group">
+                    <label>Status (Controls Popup on Client Website)</label>
+                    <select id="detail-status" class="form-control">
+                      <option value="active">✅ Active (Popup Hidden)</option>
+                      <option value="due">❌ Due for Payment (Popup Shown)</option>
+                      <option value="suspended">❌ Suspended (Popup Shown)</option>
+                    </select>
+                    <p class="help-text">
+                      ✅ Active = No popup (client paid)<br>
+                      ❌ Due/Suspended = Show popup (client needs to pay)
+                    </p>
+                  </div>
+
+                  <div class="form-group">
+                    <label>Payment Status</label>
+                    <select id="detail-paymentStatus" class="form-control">
+                      <option value="paid">Paid</option>
+                      <option value="unpaid">Unpaid</option>
+                      <option value="pending">Pending</option>
+                    </select>
+                  </div>
+
+                  <div class="button-group">
+                    <button class="btn btn-danger" id="suspend-btn">
+                      <i class="fas fa-pause"></i> Suspend Client
+                    </button>
+                    <button class="btn btn-success" id="activate-btn">
+                      <i class="fas fa-play"></i> Activate Client
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Billing Tab -->
+                <div class="tab-content" id="billing-tab">
+                  <div class="form-group">
+                    <label>Next Billing Date</label>
+                    <input type="date" id="detail-nextBilling" class="form-control" />
+                  </div>
+
+                  <div class="form-group">
+                    <label>Last Paid Date</label>
+                    <input type="text" id="detail-lastPaid" readonly class="form-control" />
+                  </div>
+
+                  <h3>Record Payment</h3>
+                  <div class="form-group">
+                    <label>Amount</label>
+                    <input type="number" id="payment-amount" class="form-control" placeholder="0.00" step="0.01" />
+                  </div>
+
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label>Payment Method</label>
+                      <select id="payment-method" class="form-control">
+                        <option value="credit_card">Credit Card</option>
+                        <option value="bank_transfer">Bank Transfer</option>
+                        <option value="check">Check</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label>Transaction ID (optional)</label>
+                      <input type="text" id="payment-transactionId" class="form-control" />
+                    </div>
+                  </div>
+
+                  <button id="record-payment-btn" class="btn btn-success btn-block">
+                    <i class="fas fa-check"></i> Record Payment & Activate
+                  </button>
+
+                  <h3>Billing History</h3>
+                  <div id="billing-history" class="billing-history"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="modal-footer">
+              <button id="save-detail-btn" class="btn btn-primary">Save Changes</button>
+              <button id="close-detail-modal" class="btn btn-secondary">Cancel</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Settings View -->
+        <div id="settings-view" class="view">
+          <div class="page-header">
+            <h1>Settings</h1>
+            <p>Manage system settings and configuration</p>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h2>Account Information</h2>
+            </div>
+            <div class="card-body">
+              <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" id="settings-email" readonly class="form-control" />
+              </div>
+              <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" id="settings-name" readonly class="form-control" />
+              </div>
+              <div class="form-group">
+                <label>Role</label>
+                <input type="text" id="settings-role" readonly class="form-control" />
+              </div>
+              <div class="form-group">
+                <label>Last Login</label>
+                <input type="text" id="settings-lastLogin" readonly class="form-control" />
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h2>API Documentation</h2>
+            </div>
+            <div class="card-body">
+              <h3>Base URL</h3>
+              <code class="code-block">/api/super-admin</code>
+
+              <h3>Authentication Endpoints</h3>
+              <div class="api-doc">
+                <strong>POST /auth/login</strong>
+                <p>Request body: { email, password }</p>
+              </div>
+
+              <h3>Client Endpoints</h3>
+              <div class="api-doc">
+                <strong>GET /clients</strong> - List all clients (with pagination)
+                <br />
+                <strong>GET /clients/:id</strong> - Get client details
+                <br />
+                <strong>POST /clients</strong> - Create new client
+                <br />
+                <strong>PUT /clients/:id</strong> - Update client info
+              </div>
+
+              <h3>Maintenance Endpoints</h3>
+              <div class="api-doc">
+                <strong>PUT /maintenance/:id/update-maintenance</strong> - Update maintenance status
+                <br />
+                <strong>POST /maintenance/:id/mark-paid</strong> - Record payment
+                <br />
+                <strong>POST /maintenance/:id/suspend</strong> - Suspend client
+                <br />
+                <strong>POST /maintenance/:id/activate</strong> - Activate client
+              </div>
+
+              <h3>Analytics Endpoints</h3>
+              <div class="api-doc">
+                <strong>GET /analytics/summary</strong> - Get system summary statistics
+                <br />
+                <strong>GET /analytics/status-breakdown</strong> - Get status breakdown
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h2>Help & Documentation</h2>
+            </div>
+            <div class="card-body">
+              <h3>Popup Logic for Client Apps</h3>
+              <p>
+                To integrate the maintenance reminder popup in your client applications, check the NextBillingDate
+                and featureLock status from the maintenance_controls document:
+              </p>
+              <div class="code-block">
+                <pre>
+if (maintenanceControl.status !== 'active' || maintenanceControl.showReminder) {
+  displayMaintenanceReminderPopup({
+    title: 'System Maintenance Notice',
+    message: 'Your subscription requires attention',
+    closeButton: true,
+    termsLink: '/terms',
+    privacyLink: '/privacy',
+    payNowLink: 'https://payment.example.com'
+  });
+}
+
+// Feature Lock Rule
+if (maintenanceControl.featureLock) {
+  disableDataCreationAndEditing();
+  allowDataViewing(); // Viewing is still allowed
+}</pre>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/dashboard.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
