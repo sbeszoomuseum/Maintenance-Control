@@ -1,0 +1,44 @@
+services:
+  - type: web
+    name: biomuseum-admin-backend
+    runtime: node
+    region: oregon
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: "5001"
+      - key: MONGODB_URI
+        scope: build,runtime
+      - key: DB_NAME
+        value: ZOOMUSEUMSBES
+      - key: JWT_SECRET
+        scope: build,runtime
+      - key: JWT_EXPIRY
+        value: 7d
+      - key: FRONTEND_URL
+        value: https://your-frontend.vercel.app
+      - key: BACKEND_URL
+        value: https://your-backend.onrender.com
+      - key: ADMIN_PANEL_URL
+        value: https://your-admin-panel.vercel.app
+      - key: LOG_LEVEL
+        value: info
+      - key: DEBUG
+        value: "false"
+    
+    # Health check
+    healthCheckPath: /health
+
+    # Automatic redeploys on git push
+    autoDeploy: true
+
+    # Build configuration
+    buildFilter:
+      paths:
+        - /backend/**/*
+        - /package.json
+        - /package-lock.json

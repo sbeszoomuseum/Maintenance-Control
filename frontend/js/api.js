@@ -1,9 +1,28 @@
 /**
  * API Client
  * Handles all communication with the backend
+ * Supports both local development and production deployments
  */
 
-const API_BASE = '/api/super-admin';
+// Determine the API base URL based on environment
+const getAPIBase = () => {
+  // Check if we're in development mode
+  const isDevelopment = window.location.hostname === 'localhost' || 
+                       window.location.hostname === '127.0.0.1';
+  
+  if (isDevelopment) {
+    // Local development - use relative API path
+    return '/api/super-admin';
+  } else {
+    // Production - use deployed backend URL
+    // This can be configured via environment variables
+    const backendUrl = window.__BACKEND_URL__ || 
+                      window.location.origin.replace(/vercel\.app|netlify\.app/, 'onrender.com');
+    return `${backendUrl}/api/super-admin`;
+  }
+};
+
+const API_BASE = getAPIBase();
 
 class APIClient {
   constructor() {

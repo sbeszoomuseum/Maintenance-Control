@@ -30,14 +30,35 @@ connectDB();
 // Security headers
 app.use(helmet());
 
-// CORS configuration
+// CORS configuration - Support both local development and production
+const corsOrigins = [
+  // Local development
+  'http://localhost:3000',
+  'http://localhost:5000',
+  'http://localhost:5001',
+  'http://localhost:8080',
+  'http://127.0.0.1:3000',
+];
+
+// Add production URLs from environment variables
+if (process.env.FRONTEND_URL) {
+  corsOrigins.push(process.env.FRONTEND_URL);
+}
+if (process.env.ADMIN_PANEL_URL) {
+  corsOrigins.push(process.env.ADMIN_PANEL_URL);
+}
+if (process.env.CLIENT_APP_BASE_URL) {
+  corsOrigins.push(process.env.CLIENT_APP_BASE_URL);
+}
+
+// Allow all Vercel deployments in production
+if (process.env.NODE_ENV === 'production') {
+  corsOrigins.push(/\.vercel\.app$/);
+}
+
 app.use(
   cors({
-    origin: [
-      process.env.CLIENT_APP_BASE_URL || 'http://localhost:3000',
-      'http://localhost:5000',
-      'http://localhost:8080',
-    ],
+    origin: corsOrigins,
     credentials: true,
   })
 );

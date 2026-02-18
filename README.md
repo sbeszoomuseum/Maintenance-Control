@@ -1,470 +1,344 @@
-# Super Admin Maintenance Control Panel
+# BioMuseum Admin Panel - Maintenance Control System
 
-A secure, enterprise-grade super admin dashboard for managing multiple college client subscriptions, maintenance status, billing cycles, and feature access controls in a multi-tenant SaaS environment.
+A complete Super Admin control panel for managing college client subscriptions, payment status, and maintenance notice popups across multiple websites.
 
-## 🚀 Features
+## 🎯 Features
 
-### Core Functionality
-- **Secure JWT Authentication** - Role-based access control for super admins only
-- **Client Management** - Create, update, and manage all client colleges
-- **Maintenance Control** - Set maintenance status (active, due, suspended) per client
-- **Billing Management** - Track payment dates, record payments, and manage billing history
-- **Feature Locking** - Disable new data creation/editing while allowing viewing
-- **Payment Reminders** - Trigger reminder popups on client applications
-- **Analytics & Reporting** - Real-time statistics on client status and revenue
-- **Automated Tasks** - Python scripts for daily billing checks and analytics
+### Admin Dashboard
+- **Client Management**: Create, read, update, and delete client accounts
+- **Status Tracking**: Track maintenance status (active, due, suspended) for each client
+- **Payment Management**: Monitor payment status (paid, pending, unpaid) per client
+- **Date Tracking**: Record last payment date and schedule next billing date
+- **Analytics**: View system-wide analytics (active clients, pending payments, suspended accounts)
+- **Responsive Design**: Works perfectly on desktop, tablet, and mobile devices
+- **Premium Styling**: Modern glassmorphism design with animations
+- **User Authentication**: Secure JWT-based admin login
 
-### Security
-- ✓ Environment variable-based secrets management
-- ✓ Bcrypt password hashing
-- ✓ Protected API routes with JWT
-- ✓ MongoDB Atlas cloud database
-- ✓ Error handling and input validation
-- ✓ CORS and Helmet security headers
+### Client Website Integration
+- **Status Popup**: Automatic popup notification on client websites showing maintenance/payment status
+- **Dismissible UI**: Users can dismiss popup (unless account is suspended)
+- **Custom Messages**: Admin-configurable status messages for each client
+- **API Endpoints**: Public endpoints for client websites to fetch status
+- **No Client Database**: Lightweight integration - no client-side database needed
 
-### UI/UX
-- ✓ Modern, responsive admin dashboard
-- ✓ Professional SaaS design language
-- ✓ Font Awesome icons and Google Fonts
-- ✓ Intuitive navigation and workflows
-- ✓ Real-time client status updates
-- ✓ Tabbed interface for client management
+### Deployment
+- **Multi-Platform**: Designed for Render (backend) and Vercel (frontend) deployment
+- **Environment-Aware**: Seamless local development to cloud deployment
+- **Automated Deployment**: GitHub Actions integration for automated testing
+- **Zero Downtime**: Supports continuous deployment with auto-redeploy on git push
 
 ## 📁 Project Structure
 
 ```
 super-admin-panel/
-├── backend/
-│   ├── config/
-│   │   ├── database.js         # MongoDB connection
-│   │   └── constants.js         # Application constants
-│   ├── middleware/
-│   │   ├── auth.js              # JWT authentication
-│   │   └── errorHandler.js      # Error handling
-│   ├── models/
-│   │   ├── MaintenanceControl.js # Client maintenance schema
-│   │   └── SuperAdmin.js         # Admin user schema
+├── backend/                    # Node.js Express server
+│   ├── server.js              # Main server initialization
 │   ├── routes/
-│   │   ├── auth.js              # Login/logout
-│   │   ├── clients.js           # Client CRUD operations
-│   │   ├── maintenance.js       # Maintenance control endpoints
-│   │   └── analytics.js         # Analytics endpoints
-│   ├── utils/
-│   │   └── responseHelper.js    # Response formatting
-│   └── server.js                # Express server setup
-├── frontend/
-│   ├── css/
-│   │   └── style.css            # Dashboard styling
+│   │   ├── clients.js         # Client CRUD endpoints
+│   │   ├── maintenance.js     # Maintenance status endpoints
+│   │   └── analytics.js       # Analytics endpoints
+│   ├── middleware/
+│   │   └── auth.js            # JWT authentication
+│   └── models/                # Data models and validation
+│
+├── frontend/                   # Static HTML/CSS/JavaScript
+│   ├── index.html             # Admin dashboard
+│   ├── login.html             # Login page
 │   ├── js/
-│   │   ├── api.js               # API client
-│   │   ├── app.js               # Main app logic
-│   │   └── dashboard.js         # Dashboard functionality
-│   └── index.html               # Main dashboard page
-├── automation/
-│   └── scripts/
-│       └── setup_admin.py       # Create first admin account (one-time setup)
-├── package.json                 # Node.js dependencies
-├── .env.example                 # Environment template
-├── .gitignore                   # Git ignore rules
-└── README.md                    # This file
+│   │   ├── api.js             # API client with environment detection
+│   │   ├── dashboard.js       # Dashboard logic
+│   │   └── auth.js            # Authentication handler
+│   ├── css/
+│   │   └── style.css          # Responsive styling
+│   ├── components/
+│   │   └── MaintenancePopup.jsx  # Client website popup component
+│   └── public/                # Static assets
+│
+├── .github/
+│   └── workflows/
+│       └── test.yml           # GitHub Actions CI/CD
+│
+├── render.yaml                # Render deployment config
+├── vercel.json                # Vercel deployment config
+├── .env                       # Development environment (not in git)
+├── .env.example               # Environment template
+├── .env.production            # Production environment template
+├── .gitignore                 # Git ignore rules
+│
+├── deployment-helper.js       # Deployment verification script
+├── deployment-monitor.js      # Service health monitoring
+│
+├── DEPLOYMENT.md              # Detailed deployment guide
+├── QUICK_START_DEPLOY.md      # 5-step quick start guide
+├── PRE_DEPLOYMENT_CHECKLIST.md # Verification checklist
+└── README.md                  # This file
 ```
 
-## 🛠️ Installation & Setup
+## 🚀 Quick Start (Development)
 
-### 1. Prerequisites
-- Node.js 14+ and npm
-- Python 3.7+ 
-- MongoDB Atlas account (or local MongoDB)
+### Prerequisites
+- Node.js 18+
+- npm or yarn
+- MongoDB Atlas account (free tier available)
 - Git
 
-### 2. Clone and Install Dependencies
+### Setup Steps
 
+1. **Clone Repository**
+   ```bash
+   git clone https://github.com/sbeszoomuseum/Maintenance-Control.git
+   cd super-admin-panel
+   ```
+
+2. **Install Dependencies**
+   ```bash
+   npm install --prefix backend
+   ```
+
+3. **Configure Environment**
+   ```bash
+   cp .env.example .env
+   # Edit .env with your settings:
+   # - MONGODB_URI: MongoDB connection string
+   # - JWT_SECRET: Random string for token signing
+   # - PORT: Server port (default: 5001)
+   ```
+
+4. **Start Server**
+   ```bash
+   npm start --prefix backend
+   ```
+
+5. **Access Dashboard**
+   - Open: http://localhost:5001
+   - Default admin login: (see admin setup)
+
+6. **Verify Installation**
+   ```bash
+   # Test API
+   curl http://localhost:5001/health
+   # Should return: {"status":"ok"}
+   ```
+
+## 📦 Deployment (Production)
+
+### Option 1: Quick Start (Recommended)
+Follow [QUICK_START_DEPLOY.md](./QUICK_START_DEPLOY.md) for 5-step deployment:
+1. Push to GitHub
+2. Deploy backend on Render
+3. Deploy frontend on Vercel
+4. Update environment variables
+5. Test deployed system
+
+### Option 2: Detailed Setup
+See [DEPLOYMENT.md](./DEPLOYMENT.md) for comprehensive deployment guide with:
+- Architecture overview
+- Step-by-step instructions
+- Troubleshooting guide
+- Production scaling recommendations
+
+### Option 3: Pre-Deployment Verification
+Run the deployment helper before pushing to production:
 ```bash
-cd super-admin-panel
-npm install
+node deployment-helper.js
 ```
 
-### 3. Configure Environment Variables
+## 🔧 Configuration
 
-Copy `.env.example` to `.env` and update with your values:
+### Environment Variables
 
-```bash
-cp .env.example .env
-```
-
-Edit `.env`:
+**Required (both dev and production):**
 ```env
-MONGODB_URI=mongodb+srv://username:password@cluster0.mongodb.net/super_admin_db?retryWrites=true&w=majority
-JWT_SECRET=your_super_secret_key_change_this_in_production_12345
-PORT=5000
-NODE_ENV=development
-SUPER_ADMIN_EMAIL=admin@biomuseum.com
-SUPER_ADMIN_PASSWORD=initialpassword123
+MONGODB_URI=mongodb+srv://...
+DB_NAME=ZOOMUSEUMSBES
+JWT_SECRET=your-secret-key
+NODE_ENV=development|production
+PORT=5001
 ```
 
-**Important:** 
-- Generate a strong `JWT_SECRET` for production
-- Use MongoDB Atlas for cloud-hosted database
-- Never commit `.env` file to version control
-
-### 4. Create Initial Super Admin Account
-
-```bash
-python automation/scripts/setup_admin.py
+**Optional (recommended):**
+```env
+JWT_EXPIRY=7d
+LOG_LEVEL=debug|info|warn|error
+FRONTEND_URL=http://localhost:3000
+BACKEND_URL=http://localhost:5001
 ```
 
-Follow the prompts to create your first super admin account.
+See [.env.example](./.env.example) for full list.
 
-### 5. Start the Application
+## 🔐 Security
 
-```bash
-# Development mode with auto-restart
-npm run dev
+- **JWT Authentication**: Secure token-based authentication with configurable expiry
+- **Password Hashing**: bcryptjs for password encryption
+- **CORS Configuration**: Restricted cross-origin access
+- **Environment Secrets**: No secrets hardcoded in source
+- **HTTPS**: Automatic SSL with Render + Vercel
 
-# Production mode
-npm start
-```
+## 📊 API Endpoints
 
-The dashboard will be available at `http://localhost:5000`
+### Public Endpoints (no authentication)
+- `GET /api/maintenance/status/:client_id` - Get client status
+- `POST /api/maintenance/check` - Check multiple clients
 
-## 📡 API Documentation
+### Admin Endpoints (JWT required)
+- `POST /api/super-admin/login` - Admin login
+- `GET /api/super-admin/clients` - List all clients
+- `POST /api/super-admin/clients` - Create client
+- `PUT /api/super-admin/clients/:id` - Update client
+- `DELETE /api/super-admin/clients/:id` - Delete client
+- `GET /api/super-admin/analytics` - Get analytics
 
-### Base URL
-```
-/api/super-admin
-```
+## 💾 Database Schema
 
-### Authentication Endpoints
-
-#### POST /auth/login
-Login with super admin credentials
-
-**Request:**
-```json
-{
-  "email": "admin@biomuseum.com",
-  "password": "password123"
-}
-```
-
-**Response:**
-```json
-{
-  "success": true,
-  "message": "Login successful",
-  "data": {
-    "token": "eyJhbGciOiJIUzI1NiIs...",
-    "admin": {
-      "id": "507f1f77bcf86cd799439011",
-      "email": "admin@biomuseum.com",
-      "fullName": "Super Admin",
-      "role": "super_admin"
-    }
-  }
-}
-```
-
-### Client Endpoints
-
-#### GET /clients
-List all clients with pagination and filtering
-
-**Query Parameters:**
-- `page` (default: 1)
-- `limit` (default: 10)
-- `status` (active|due|suspended)
-- `search` (search by name or email)
-
-**Response:**
-```json
-{
-  "success": true,
-  "data": [
-    {
-      "_id": "507f1f77bcf86cd799439012",
-      "clientId": "college-001",
-      "clientName": "University of Excellence",
-      "status": "active",
-      "plan": "premium",
-      "nextBillingDate": "2024-03-15T00:00:00.000Z",
-      "lastPaidDate": "2024-02-15T00:00:00.000Z",
-      "showReminder": false,
-      "featureLock": false,
-      "contactEmail": "admin@university.edu",
-      "billingHistory": [...],
-      "notes": "Premium client",
-      "createdAt": "2024-01-15T10:30:00.000Z",
-      "updatedAt": "2024-02-15T10:30:00.000Z"
-    }
-  ],
-  "pagination": {
-    "total": 25,
-    "page": 1,
-    "limit": 10,
-    "pages": 3
-  }
-}
-```
-
-#### GET /clients/:id
-Get specific client details
-
-#### POST /clients
-Create new client
-
-**Request:**
-```json
-{
-  "clientId": "college-002",
-  "clientName": "State University",
-  "plan": "standard",
-  "contactEmail": "admin@stateuniversity.edu",
-  "nextBillingDate": "2024-04-15"
-}
-```
-
-#### PUT /clients/:id
-Update client information
-
-### Maintenance Endpoints
-
-#### PUT /maintenance/:id/update-maintenance
-Update maintenance status and controls
-
-**Request:**
-```json
-{
-  "status": "active|due|suspended",
-  "showReminder": true|false,
-  "featureLock": true|false,
-  "notes": "Admin notes"
-}
-```
-
-#### POST /maintenance/:id/mark-paid
-Record a payment and activate client
-
-**Request:**
-```json
-{
-  "amount": 1500.00,
-  "method": "credit_card|bank_transfer|check",
-  "transactionId": "txn_12345",
-  "nextBillingDate": "2024-05-15"
-}
-```
-
-#### POST /maintenance/:id/suspend
-Suspend a client
-
-**Request:**
-```json
-{
-  "reason": "Non-payment"
-}
-```
-
-#### POST /maintenance/:id/activate
-Reactivate a suspended client
-
-### Analytics Endpoints
-
-#### GET /analytics/summary
-Get overall system statistics
-
-**Response:**
-```json
-{
-  "success": true,
-  "data": {
-    "totalClients": 25,
-    "activeClients": 22,
-    "dueClients": 2,
-    "suspendedClients": 1,
-    "totalRevenue": 75000.00,
-    "healthPercentage": 88
-  }
-}
-```
-
-#### GET /analytics/status-breakdown
-Get client status distribution
-
-**Response:**
-```json
-{
-  "success": true,
-  "data": {
-    "active": 22,
-    "due": 2,
-    "suspended": 1
-  }
-}
-```
-
-## 🔐 Security Best Practices
-
-1. **Environment Variables**
-   - Never hardcode secrets in code
-   - Use `.env` file (add to `.gitignore`)
-   - Rotate JWT_SECRET regularly
-
-2. **Database Security**
-   - Use MongoDB Atlas IP whitelist
-   - Enable MongoDB authentication
-   - Use strong passwords for database user
-
-3. **API Security**
-   - All endpoints require JWT authentication
-   - Passwords are hashed with bcrypt
-   - Helmet provides HTTP headers security
-   - CORS is restricted to allowed domains
-
-4. **Access Control**
-   - Only `super_admin` role can access this panel
-   - Account lockdown after 5 failed login attempts
-   - All actions are logged
-
-## 📊 Database Schema
-
-### maintenance_controls Collection
 ```javascript
 {
   _id: ObjectId,
-  clientId: String (unique),
-  clientName: String,
-  status: "active" | "due" | "suspended",
-  plan: "basic" | "standard" | "premium",
-  nextBillingDate: Date,
-  lastPaidDate: Date,
-  showReminder: Boolean,
-  featureLock: Boolean,
-  billingHistory: [
-    {
-      paymentDate: Date,
-      amount: Number,
-      plan: String,
-      method: String,
-      transactionId: String,
-      notes: String
-    }
-  ],
-  notes: String,
-  contactEmail: String,
-  contactPhone: String,
-  isActive: Boolean,
-  createdAt: Date,
-  updatedAt: Date
+  client_id: String,           // Unique identifier
+  name: String,                // Company name
+  status: String,              // 'active' | 'due' | 'suspended'
+  message: String,             // Custom status message
+  payment_status: String,      // 'paid' | 'pending' | 'unpaid'
+  last_paid_date: Date,        // Last payment timestamp
+  next_billing_date: Date,     // Next billing due date
+  created_at: Date,            // Created timestamp
+  updated_at: Date             // Last update timestamp
 }
 ```
 
-### super_admins Collection
-```javascript
-{
-  _id: ObjectId,
-  email: String (unique),
-  password: String (hashed),
-  fullName: String,
-  role: "super_admin",
-  lastLogin: Date,
-  isActive: Boolean,
-  loginAttempts: Number,
-  lockUntil: Date,
-  createdAt: Date,
-  updatedAt: Date
-}
+## 🧪 Testing
+
+### Local Testing
+```bash
+# Test server is running
+curl http://localhost:5001/health
+
+# Test admin login
+curl -X POST http://localhost:5001/api/super-admin/login \
+  -H "Content-Type: application/json" \
+  -d '{"username":"admin","password":"password"}'
+
+# Test status endpoint
+curl http://localhost:5001/api/maintenance/status/your-client-id
 ```
 
-## 🎯 Simple Manual Control
+### Automated Testing
+GitHub Actions runs tests on every push:
+- Backend syntax validation
+- Frontend file presence checks
+- Configuration file validation
+- Environment setup verification
 
-No cron jobs, no automation scripts - just manually control when popups show:
+## 📈 Monitoring
 
-**How it works:**
-1. Admin Panel → Click "Edit" on any client
-2. Go to "Maintenance" tab
-3. Set **Status**:
-   - ✅ `active` = Popup HIDDEN (paid)
-   - ❌ `due` = Popup SHOWN (unpaid)
-   - ❌ `suspended` = Popup SHOWN (suspended)
-4. Add optional notes that appear in the popup
-5. Click "Save Changes"
+### Health Checks
+```bash
+# Manual health check
+curl https://your-backend.onrender.com/health
 
-**That's it!** The popup automatically shows/hides on the client website based on the status you set.
-
-## 🔗 Client App Integration
-
-To integrate the maintenance reminder popup in your client applications, see `CLIENT_INTEGRATION.md`.
-
-**Quick Summary:**
-- Fetch client status from API
-- If status is NOT `active` → Show popup
-- If status is `active` → Hide popup
-- Display custom message from admin panel notes
-
-**Simple 2-minute setup:**
+# Automated monitoring
+node deployment-monitor.js start
 ```
 
-## 📱 Responsive Design
-
-The dashboard is fully responsive and works on:
-- ✓ Desktop (1920x1080 and higher)
-- ✓ Laptop (1366x768)
-- ✓ Tablet (768px and up)
-- Mobile optimizations available
-
-## 🚀 Performance
-
-- Paginated client list (10 per page)
-- Index on status and nextBillingDate
-- Efficient MongoDB queries with aggregation
-- Frontend caching of user data
-- Lazy loading of client details
+### Uptime Monitoring
+Recommended external monitors:
+- [UptimeRobot](https://uptimerobot.com/) - Free uptime monitoring
+- [StatusPage.io](https://www.statuspage.io/) - Status page
+- [Render Health Checks](https://render.com/docs/health-checks)
 
 ## 🐛 Troubleshooting
 
-### MongoDB Connection Issues
-```
-Error: MONGODB_URI environment variable not set
-```
-Solution: Ensure `.env` file is in the root directory with valid MongoDB URI
+### Server Won't Start
+1. Check Node version: `node -v` (should be 18+)
+2. Verify MongoDB connection: `MONGODB_URI` in .env
+3. Check port availability: `netstat -ano | findstr :5001` (Windows)
+4. View error logs for specific issues
 
-### Authentication Errors
-```
-Error: Invalid or expired token
-```
-Solution: Log out and log back in. JWT tokens expire after 7 days.
+### CORS Errors
+1. Verify `FRONTEND_URL` in backend environment
+2. Check `BACKEND_URL` in frontend configuration
+3. Review CORS configuration in `backend/server.js`
 
-### API Not Found
-```
-Error: Endpoint not found
-```
-Solution: Ensure API base path is `/api/super-admin` not `/api/admin`
+### Deployment Failures
+1. View platform logs:
+   - Render: Service dashboard → Logs tab
+   - Vercel: Project dashboard → Deployments
+2. Verify all environment variables are set
+3. Check GitHub Actions workflow: `.github/workflows/test.yml`
 
-### Python Script Errors
-```
-Error: pymongo not installed
-```
-Solution: `pip install pymongo python-dotenv bcrypt`
+See [PRE_DEPLOYMENT_CHECKLIST.md](./PRE_DEPLOYMENT_CHECKLIST.md) and [DEPLOYMENT.md](./DEPLOYMENT.md) for more troubleshooting.
 
-## 📚 Additional Resources
+## 📚 Documentation
 
-- [MongoDB Atlas Documentation](https://docs.atlas.mongodb.com/)
-- [Express.js Guide](https://expressjs.com/)
-- [JWT Introduction](https://jwt.io/introduction)
-- [Bcrypt Documentation](https://github.com/kelektiv/node.bcrypt.js)
+- **[QUICK_START_DEPLOY.md](./QUICK_START_DEPLOY.md)** - Fast 5-step deployment guide
+- **[DEPLOYMENT.md](./DEPLOYMENT.md)** - Comprehensive deployment documentation
+- **[PRE_DEPLOYMENT_CHECKLIST.md](./PRE_DEPLOYMENT_CHECKLIST.md)** - Pre-deployment verification
+- **API Documentation** - See backend routes for endpoint details
+
+## 🚦 Status Conditions
+
+### Displays Popup When:
+- Status is NOT 'active' (i.e., 'due' or 'suspended'), OR
+- Payment status is NOT 'paid' (i.e., 'pending' or 'unpaid')
+
+### Suspension Lock:
+When account is suspended:
+- Close button hidden
+- Button disabled with "Contact Support" message
+- Popup cannot be dismissed by clicking overlay
+- Forces user attention to suspension notice
+
+## 🔄 Deployment Workflow
+
+```
+Local Development
+↓
+git push → GitHub
+↓
+GitHub Actions (automated testing)
+↓
+Render Backend (auto-deploy on success)
+↓
+Vercel Frontend (auto-deploy on success)
+↓
+Production Live
+```
+
+## 📞 Support & Resources
+
+- **Render Docs**: https://render.com/docs
+- **Vercel Docs**: https://vercel.com/docs
+- **MongoDB Atlas**: https://www.mongodb.com/docs/atlas/
+- **GitHub Pages**: https://pages.github.com/
 
 ## 📝 License
 
-MIT License - Feel free to use for your project
+Private project for BioMuseum Zoo College
 
-## 👥 Support
+## 🤝 Contributing
 
-For issues or questions:
-1. Check the troubleshooting section
-2. Review API documentation
-3. Check MongoDB Atlas logs for errors
-4. Use browser console for frontend errors
+1. Create feature branch: `git checkout -b feature/your-feature`
+2. Commit changes: `git commit -m "Add feature"`
+3. Push to branch: `git push origin feature/your-feature`
+4. Create Pull Request with description
+
+## ✅ Checklist for First Deployment
+
+- [ ] Read QUICK_START_DEPLOY.md
+- [ ] Run `node deployment-helper.js`
+- [ ] Generated and saved JWT_SECRET
+- [ ] Tested locally: `npm start`
+- [ ] Pushed to GitHub: `git push`
+- [ ] Created Render service and deployed
+- [ ] Created Vercel project and deployed
+- [ ] Updated environment variables with deployed URLs
+- [ ] Verified `/health` endpoint
+- [ ] Tested admin login
+- [ ] Tested status endpoint
+- [ ] Verified client website integration
 
 ---
 
-**Built with ❤️ for efficient SaaS management**
+**Last Updated**: 2024
+**Status**: Ready for Production Deployment ✅
+
+For deployment questions, see [DEPLOYMENT.md](./DEPLOYMENT.md)

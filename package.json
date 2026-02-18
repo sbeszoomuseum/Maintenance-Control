@@ -5,7 +5,13 @@
   "main": "backend/server.js",
   "scripts": {
     "start": "node backend/server.js",
-    "dev": "nodemon backend/server.js"
+    "dev": "nodemon backend/server.js",
+    "test": "node .github/workflows/test.js",
+    "check": "node deployment-helper.js",
+    "monitor": "node deployment-monitor.js start",
+    "monitor:status": "node deployment-monitor.js status",
+    "deploy:check": "node deployment-helper.js && npm run check",
+    "deploy:production": "git add . && git commit -m 'Production deployment' && git push origin main"
   },
   "keywords": ["admin", "saas", "maintenance", "college"],
   "author": "",

@@ -1,0 +1,122 @@
+name: Test & Build
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  test-backend:
+    runs-on: ubuntu-latest
+    
+    services:
+      mongodb:
+        image: mongo:latest
+        options: >-
+          --health-cmd mongosh
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 27017:27017
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+    
+    - name: Install backend dependencies
+      run: cd super-admin-panel/backend && npm install
+    
+    - name: Check backend syntax
+      run: cd super-admin-panel/backend && node -c server.js
+    
+    - name: Verify required files exist
+      run: |
+        test -f super-admin-panel/backend/server.js
+        test -f super-admin-panel/backend/routes/clients.js
+        test -f super-admin-panel/backend/routes/maintenance.js
+        test -f super-admin-panel/backend/routes/analytics.js
+    
+    - name: Check for security issues (basic)
+      run: |
+        cd super-admin-panel/backend
+        grep -r "password" . --include="*.js" | grep -v "bcrypt" | grep -v "hashPassword" | grep -v "// " && exit 1 || true
+        grep -r "TODO\|FIXME" . --include="*.js" | wc -l
+
+  test-frontend:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+    
+    - name: Verify frontend files exist
+      run: |
+        test -f super-admin-panel/frontend/index.html
+        test -f super-admin-panel/frontend/js/api.js
+        test -f super-admin-panel/frontend/css/style.css
+        test -f super-admin-panel/frontend/components/MaintenancePopup.jsx
+    
+    - name: Check for console errors in HTML
+      run: |
+        cd super-admin-panel/frontend
+        grep -i "console.error" *.html js/*.js css/*.css || true
+    
+    - name: Validate HTML
+      run: |
+        cd super-admin-panel/frontend
+        # Basic HTML validation
+        grep -q "<!DOCTYPE html>" index.html || exit 1
+        grep -q "<title>" index.html || exit 1
+
+  lint-config:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Validate deployment configs
+      run: |
+        # Check required deployment files exist
+        test -f super-admin-panel/render.yaml
+        test -f super-admin-panel/vercel.json
+        test -f super-admin-panel/DEPLOYMENT.md
+        
+        # Verify YAML syntax
+        python3 -c "import yaml; yaml.safe_load(open('super-admin-panel/render.yaml'))" || exit 1
+    
+    - name: Check environment configuration
+      run: |
+        test -f super-admin-panel/.env.example
+        test -f super-admin-panel/.env.production
+        
+        # Verify required variables in example
+        grep "MONGODB_URI" super-admin-panel/.env.example
+        grep "JWT_SECRET" super-admin-panel/.env.example
+        grep "NODE_ENV" super-admin-panel/.env.example
+
+  build-summary:
+    needs: [test-backend, test-frontend, lint-config]
+    runs-on: ubuntu-latest
+    if: always()
+    
+    steps:
+    - name: Build Status
+      run: |
+        echo "Build Status Report:"
+        echo "- Backend tests: ${{ needs.test-backend.result }}"
+        echo "- Frontend tests: ${{ needs.test-frontend.result }}"
+        echo "- Config validation: ${{ needs.lint-config.result }}"
+        
+        if [ "${{ needs.test-backend.result }}" = "failure" ] || [ "${{ needs.test-frontend.result }}" = "failure" ] || [ "${{ needs.lint-config.result }}" = "failure" ]; then
+          exit 1
+        fi
