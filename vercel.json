@@ -49,10 +49,10 @@
     },
     {
       "source": "/api/(.*)",
-      "destination": "https://your-backend.onrender.com/api/$1"
+      "destination": "https://servermaintenancecontrolsbes.onrender.com/api/$1"
     }
   ],
   "env": {
-    "REACT_APP_BACKEND_URL": "@backend_url"
+    "REACT_APP_BACKEND_URL": "https://servermaintenancecontrolsbes.onrender.com"
   }
 }
