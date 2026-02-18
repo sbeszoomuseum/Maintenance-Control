@@ -5,10 +5,8 @@
  */
 
 (function() {
-  // Get backend URL from environment variable set by Vercel
-  // or fall back to the rendered environment variable
-  const backendUrl = window.__BACKEND_URL__ || 
-                     'https://servermaintenancecontrolsbes.onrender.com';
+  // Hardcoded backend URL (Vercel static sites can't use env vars)
+  const backendUrl = 'https://servermaintenancecontrolsbes.onrender.com';
   
   // Set global configuration
   window.__CONFIG__ = {
@@ -20,7 +18,14 @@
   // Set window.__BACKEND_URL__ for api.js
   window.__BACKEND_URL__ = backendUrl;
   
+  // Debug logging
   console.log('✅ Frontend Configuration Loaded');
-  console.log('Backend URL:', window.__CONFIG__.BACKEND_URL);
-  console.log('Frontend URL:', window.__CONFIG__.FRONTEND_URL);
+  console.log('window.__BACKEND_URL__:', window.__BACKEND_URL__);
+  console.log('Configuration:', window.__CONFIG__);
+  
+  // Verify the URL is correct
+  if (!window.__BACKEND_URL__.includes('render')) {
+    console.warn('⚠️  Backend URL might be wrong!', window.__BACKEND_URL__);
+  }
 })();
+

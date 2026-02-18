@@ -14,14 +14,19 @@ const getAPIBase = () => {
     // Local development - use relative API path
     return '/api/super-admin';
   } else {
-    // Production - use deployed backend URL
-    // This can be configured via environment variables
-    const backendUrl = window.__BACKEND_URL__ || 
-                      window.location.origin.replace(/vercel\.app|netlify\.app/, 'onrender.com');
+    // Production - use absolute URL to backend
+    // window.__BACKEND_URL__ is set by config.js
+    const backendUrl = window.__BACKEND_URL__ || 'https://servermaintenancecontrolsbes.onrender.com';
+    
+    if (!backendUrl.includes('http')) {
+      console.warn('Invalid backend URL:', backendUrl);
+    }
+    
     return `${backendUrl}/api/super-admin`;
   }
 };
 
+// Get API base - use function to get runtime value
 const API_BASE = getAPIBase();
 
 class APIClient {
@@ -54,6 +59,10 @@ class APIClient {
 
   async request(method, endpoint, data = null) {
     const url = `${this.baseURL}${endpoint}`;
+    
+    // Debug log to see what URL we're calling
+    console.log(`🔗 API Request: ${method} ${url}`);
+    
     const options = {
       method,
       headers: this.getHeaders(),
@@ -68,6 +77,7 @@ class APIClient {
       const result = await response.json();
 
       if (!response.ok) {
+        console.error(`❌ API Error (${response.status}):`, result);
         throw {
           status: response.status,
           message: result.message || 'An error occurred',
@@ -75,9 +85,10 @@ class APIClient {
         };
       }
 
+      console.log(`✅ API Success: ${method} ${url}`, result);
       return result;
     } catch (error) {
-      console.error('API Error:', error);
+      console.error('❌ API Error:', error);
       throw error;
     }
   }
